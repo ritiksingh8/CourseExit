@@ -1,0 +1,40 @@
+.nav-item:hover{
+	background-color: #f7f7f7;
+	border-radius: 0.5rem;
+	color: black !important;
+	box-shadow: grey !important;
+	transition: 0.5s;
+	
+
+}
+.navbar-brand:hover{
+	font-weight: bold !important;
+	transition: 0.1s;
+}
+.opt1:hover {
+
+	text-decoration: underline;
+
+}
+
+
+/*Corey ke stylings*/
+
+.content-section {
+  background: #ffffff;
+  padding: 10px 20px;
+  border: 1px solid #dddddd;
+  border-radius: 3px;
+  margin-bottom: 20px;
+}
+
+.article-metadata {
+  padding-bottom: 1px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid #e3e3e3
+}
+
+.article-metadata a:hover {
+  color: #333;
+  text-decoration: none;
+}

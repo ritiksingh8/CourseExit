@@ -1,0 +1,25 @@
+{% extends 'course/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}		
+	
+
+	<h2>Please, Answer these questions</h2>	
+	<form method="POST">
+		{% csrf_token %}
+		{% for index,question in questions %}
+
+			<article class="media content-section">
+			  <div class="media-body">
+			    <div class="article-metadata">
+			      <h5>{{ index }}. {{ question }}</h5>
+			    </div>
+			    <input type="radio" name="{{ index }}" value="Average">Average<br>
+			    <input type="radio" name="{{ index }}" value="High">High<br>
+			    <input type="radio" name="{{ index }}" value="Low">Low
+			  </div>
+			</article>
+		{% endfor %}
+		<button type="submit" class="btn btn-primary">Submit Response</button>
+	</form>	
+
+{% endblock content %}	 
