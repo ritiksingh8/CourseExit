@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import FacultyCourseMapping,Teacher
-from course.models import Question, Course
+from course.models import Question, Course, Response
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView,DetailView,CreateView,UpdateView,DeleteView
 
@@ -28,6 +28,44 @@ def show_questions(request,id):
 		return render(request,'teacher/show_questions.html',context)
 
 	return render(request,'student/forbidden.html')	
+
+def show_responses(request,id,pk):
+	if len(Teacher.objects.filter(user=request.user))!=0:
+
+		course_obj = Course.objects.filter(id=id).first()
+
+		question_obj = Question.objects.filter(course=course_obj).filter(id=pk).first()
+
+		responses = Response.objects.filter(question=question_obj)
+
+		context = {'responses':responses}
+
+		return render(request,'teacher/show_responses.html',context) 
+
+	return render(request,'student/forbidden.html')
+
+def show_charts(request,id):
+
+	course_obj = Course.objects.filter(id=id).first()
+
+	questions = Question.objects.filter(course=course_obj)
+
+	responses = [ Response.objects.filter(question=question) for question in questions ]
+
+	labels = ['Average','High','Low']
+
+	data = [[len(Response.objects.filter(question=question).filter(answer='Average')), len(Response.objects.filter(question=question).filter(answer='High')),len(Response.objects.filter(question=question).filter(answer='Low'))] for question in questions]
+
+	print(labels)
+	print(data)
+
+	index = [i for i in range(len(data))]
+	return render(request, 'teacher/show_charts.html', {
+        'labels_list': labels,
+        'data_list': zip(index,data),
+    })
+
+
 
 class QuestionCreateView(LoginRequiredMixin, CreateView):
 	model=Question	

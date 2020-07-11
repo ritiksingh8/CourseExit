@@ -14,9 +14,11 @@ urlpatterns = [
     path('logout/',auth_views.LogoutView.as_view(template_name="student/logout.html"),name='logout'),
     path('redirectingurl',student_views.redirectingview,name='redirectingurl'),
     path('teacher/course/<int:id>/questions',teacher_views.show_questions,name='show_questions'),
+    path('teacher/course/<int:id>/charts',teacher_views.show_charts,name='show_charts'),
     path('teacher/course/<int:id>/questions/create',QuestionCreateView.as_view(),name='create_questions'),
     path('teacher/course/<int:id>/questions/<int:pk>/update',QuestionUpdateView.as_view(),name='update_questions'),
     path('teacher/course/<int:id>/questions/<int:pk>/delete',QuestionDeleteView.as_view(),name='delete_questions'),
-    path('student/course/<int:id>/questions',student_views.show_questions,name='show_questions_students')
+    path('student/course/<int:id>/questions',student_views.show_questions,name='show_questions_students'),
+    path('teacher/course/<int:id>/questions/<int:pk>/responses',teacher_views.show_responses,name='show_responses'),
 ]
- 
+  

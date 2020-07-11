@@ -12,7 +12,7 @@ class Course(models.Model):
 
 	def __str__ (self):
 
-		return "{}".format(self.cname)
+		return "{}".format(self.cname) 
 
 
 class Question(models.Model):
