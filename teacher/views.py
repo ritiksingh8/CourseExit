@@ -37,8 +37,12 @@ def show_responses(request,id,pk):
 		question_obj = Question.objects.filter(course=course_obj).filter(id=pk).first()
 
 		responses = Response.objects.filter(question=question_obj)
+		labels = ['Average','High','Low']
+		data = [len(Response.objects.filter(question=question_obj).filter(answer='Average')), len(Response.objects.filter(question=question_obj).filter(
+			answer='High')), len(Response.objects.filter(question=question_obj).filter(answer='Low'))]
 
-		context = {'responses':responses}
+		context = {'responses': responses, 'labels_list': labels,
+                    'data_list': data, 'question': question_obj.question}
 
 		return render(request,'teacher/show_responses.html',context) 
 
@@ -49,6 +53,7 @@ def show_charts(request,id):
 	course_obj = Course.objects.filter(id=id).first()
 
 	questions = Question.objects.filter(course=course_obj)
+	
 
 	responses = [ Response.objects.filter(question=question) for question in questions ]
 

@@ -2,38 +2,70 @@
 {% load crispy_forms_tags %}
 {% block content %}		
 
+	<div id="container" style="width: 75%;margin: 0px auto;text-align: center;">
+		<h3>{{ question }}</h3>
+		<br>
+		<canvas id="bar-chart"></canvas>
+	</div>
+	<br>
 	<div class="container">
-	<table class="centered">
-		<thead class="blue" style="color: white;">
-			<tr style="color: white;border-bottom: 1px dashed white">
-			<th style="color: white; border-radius: 0px;border-right: 1px dashed white">
-				UID
-			</th>
-			<th style="color: white; border-radius: 0px;border-right: 1px dashed white">
-				Name
-			</th>
-			<th style="color: white; border-radius: 0px;border-right: 1px dashed white">
-				Response
-			</th>
-		</tr>
+		
+	<table class="table table-striped"
+		style="border-style: solid;border-color: black;border-width: 2px;border-radius: 2rem">
+		<thead>
+			<tr>
+				<th scope="col" class="align-middle">
+					UID
+				</th>
+				<th scope="col">
+					Name
+				</th>
+				<th scope="col">
+					Response
+				</th>
+			</tr>
 		</thead>
 
+		<tbody>
 		{% for response in responses %}
-			<tbody>
-				<tr class="blue lighten-2">
-					<td style="border-radius: 0px;border-right: 1px dashed white">
-						{{ response.student.uid }}
-					</td>
-					<td style="border-radius: 0px;border-right: 1px dashed white">
-						{{ response.student.user.first_name }} {{ response.student.user.last_name }}
-					</td>
-					<td style="border-radius: 0px;border-right: 1px dashed white">
-						{{ response.answer }}
-					</td>
-				</tr>
+		<tr>
+			<th scope="row">{{ response.student.uid }}</th>
+		
+			<td>
+				{{ response.student.user.first_name }} {{ response.student.user.last_name }}
+			</td>
+			<td>
+				{{ response.answer }}
+			</td>
+		</tr>
 				
-			</tbody>
 		{% endfor %}	
+			</tbody>
 	</table>
+	
+	<script>
+		var config = {
+			type: 'bar',
+			data: {
+				datasets: [{
+					data: {{ data_list|safe }},
+			backgroundColor: [
+				'#6A1B9A', '#E85285', '#42B3D5',
+			],
+			label: 'Response'
+		        }],
+		labels: {{ labels_list|safe }}
+		      },
+		options: {
+			responsive: true,
+		}
+		    };
 
+		window.onload = function () {
+			var ctx = document.getElementById('bar-chart').getContext('2d');
+			window.myPie = new Chart(ctx, config);
+		};
+
+	</script>
+	
 {% endblock content %}	 

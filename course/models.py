@@ -17,7 +17,7 @@ class Course(models.Model):
 
 class Question(models.Model):
 
-	course=models.FSoreignKey(Course,on_delete=models.CASCADE)
+	course=models.ForeignKey(Course,on_delete=models.CASCADE)
 	question=models.CharField(max_length=255)
 
 	def __str__ (self):
