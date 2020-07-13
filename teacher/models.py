@@ -7,12 +7,10 @@ class Teacher(models.Model):
 
 	user = models.OneToOneField(User,on_delete=models.CASCADE)
 	fid=models.CharField(max_length=10,default="#")
-	name=models.CharField(max_length=100,default="#")
-	email_id=models.CharField(max_length=40,default="#")
 
 	def __str__(self):
 
-		return "{}".format(self.name)
+		return "{} {}".format(self.user.first_name,self.user.last_name)
 
 class FacultyCourseMapping(models.Model):
 
@@ -21,4 +19,4 @@ class FacultyCourseMapping(models.Model):
 
 	def __str__ (self):
 
-		return "{} - {}".format(self.teacher.name,self.course.cname) 
+		return "{} {} - {}".format(self.teacher.user.first_name,self.teacher.user.last_name,self.course.cname) 

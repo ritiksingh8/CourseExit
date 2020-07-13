@@ -2,6 +2,8 @@ from django.shortcuts import render,redirect
 from course.models import Course,Question,Response,CourseExitStatus
 from .models import Student
 from django.contrib import messages
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 # Create your views here.
 
 
@@ -59,7 +61,22 @@ def show_questions(request,id):
 		}
 
 		return render(request,'student/show_questions.html',context=context)
-	
 
+def change_password(request):
 
- 
+	if request.method == 'POST':
+		form = PasswordChangeForm(data=request.POST,user=request.user)
+
+		if form.is_valid():
+			form.save()
+			update_session_auth_hash(request,form.user)
+			messages.success(request,f'Your Password has been changed!')
+			return redirect('redirectingurl')
+
+		else:
+			messages.error(request,f'Your form is invalid!')
+			return redirect('changepassword')
+
+	form = PasswordChangeForm(user=request.user)
+	context = {'form':form}
+	return render(request,'student/change_password.html',context)
