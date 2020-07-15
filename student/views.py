@@ -4,9 +4,10 @@ from .models import Student
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
-
+@login_required
 def home(request):
 
 	if len(Student.objects.filter(user=request.user))!=0:
@@ -27,6 +28,7 @@ def redirectingview(request):
 
 	return redirect('teacher-home')
 
+@login_required
 def show_questions(request,id):
 
 
@@ -62,6 +64,7 @@ def show_questions(request,id):
 
 		return render(request,'student/show_questions.html',context=context)
 
+@login_required
 def change_password(request):
 
 	if request.method == 'POST':
@@ -74,7 +77,7 @@ def change_password(request):
 			return redirect('redirectingurl')
 
 		else:
-			messages.error(request,f'Your form is invalid!')
+			messages.warning(request,f'Your form is invalid!')
 			return redirect('changepassword')
 
 	form = PasswordChangeForm(user=request.user)

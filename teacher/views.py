@@ -1,9 +1,16 @@
 from django.shortcuts import render
 from .models import FacultyCourseMapping,Teacher
-from course.models import Question, Course, Response
+from course.models import Question, Course, Response, CourseExitStatus
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView,DetailView,CreateView,UpdateView,DeleteView
+from django.contrib.auth.decorators import login_required
 
+from django.core.files.storage import FileSystemStorage
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from weasyprint import HTML
+
+@login_required
 def home(request):
 
 	if len(Teacher.objects.filter(user=request.user))!=0:
@@ -15,20 +22,21 @@ def home(request):
 
 	return render(request,'student/forbidden.html')
 
-
+@login_required
 def show_questions(request,id):
 	if len(Teacher.objects.filter(user=request.user))!=0:
 
-		course_obj = Course.objects.filter(id=id).first()
+		course_obj = Course.objects.filter(id=id).first() 
 
 		Questions = Question.objects.filter(course=course_obj)
 
-		context = {'questions':Questions}
+		context = {'questions':Questions,'course':course_obj}
 
 		return render(request,'teacher/show_questions.html',context)
 
 	return render(request,'student/forbidden.html')	
 
+@login_required
 def show_responses(request,id,pk):
 	if len(Teacher.objects.filter(user=request.user))!=0:
 
@@ -48,31 +56,8 @@ def show_responses(request,id,pk):
 
 	return render(request,'student/forbidden.html')
 
-def show_charts(request,id):
 
-	course_obj = Course.objects.filter(id=id).first()
-
-	questions = Question.objects.filter(course=course_obj)
-	
-
-	responses = [ Response.objects.filter(question=question) for question in questions ]
-
-	labels = ['Average','High','Low']
-
-	data = [[len(Response.objects.filter(question=question).filter(answer='Average')), len(Response.objects.filter(question=question).filter(answer='High')),len(Response.objects.filter(question=question).filter(answer='Low'))] for question in questions]
-
-	print(labels)
-	print(data)
-
-	index = [i for i in range(len(data))]
-	return render(request, 'teacher/show_charts.html', {
-        'labels_list': labels,
-        'data_list': zip(index,data),
-    })
-
-
-
-class QuestionCreateView(LoginRequiredMixin, CreateView):
+class QuestionCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 	model=Question	
 	fields=['question']
 
@@ -80,6 +65,17 @@ class QuestionCreateView(LoginRequiredMixin, CreateView):
 		course_obj = Course.objects.filter(id=self.kwargs['id']).first()
 		form.instance.course = course_obj
 		return super().form_valid(form)
+
+	def test_func(self):
+
+		course_obj = Course.objects.filter(id=self.kwargs['id']).first()
+		faculty_course_mappings = FacultyCourseMapping.objects.filter(course = course_obj)
+
+		for faculty_course_mapping in faculty_course_mappings:
+			if self.request.user == faculty_course_mapping.teacher.user:
+				return True
+
+		return False
 
 class QuestionUpdateView(LoginRequiredMixin,UserPassesTestMixin, UpdateView):
 	model=Question	
@@ -117,6 +113,45 @@ class QuestionDeleteView(LoginRequiredMixin,UserPassesTestMixin, DeleteView):
 				return True
 
 		return False			
+
+def download_pdf(request,id):
+
+	course_obj = Course.objects.filter(id=id).first()
+	course_exit_status_objects = CourseExitStatus.objects.filter(course=course_obj)
+
+	question_objects = Question.objects.filter(course=course_obj)
+
+	all_students_responses = []
+
+	for course_exit_status_object in course_exit_status_objects:
+
+		one_student_response = []
+
+		for question_object in question_objects:
+
+			response_obj = Response.objects.filter(question = question_object,student = course_exit_status_object.student).first()
+
+			one_student_response.append((course_exit_status_object.student,question_object.question,response_obj.answer))
+
+		all_students_responses.append(one_student_response)
+
+	print(all_students_responses)
+
+	html_string = render_to_string('teacher/download.html', {'all_students_responses':all_students_responses})
+
+	html = HTML(string=html_string)
+	fs = FileSystemStorage('./')
+	print(fs.location)
+	html.write_pdf(target='./mypdf.pdf');
+
+	with fs.open('mypdf.pdf') as pdf:
+		response = HttpResponse(pdf, content_type='application/pdf')
+		response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
+		return response
+
+	return response
+
+
 
 
 
