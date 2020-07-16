@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import FacultyCourseMapping,Teacher
+from hod.models import Hod
 from course.models import Question, Course, Response, CourseExitStatus
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView,DetailView,CreateView,UpdateView,DeleteView
@@ -24,13 +25,16 @@ def home(request):
 
 @login_required
 def show_questions(request,id):
-	if len(Teacher.objects.filter(user=request.user))!=0:
+	isTeacher = len(Teacher.objects.filter(user=request.user))!=0
+	isHod = len(Hod.objects.filter(user=request.user))!=0
+
+	if isTeacher or isHod:
 
 		course_obj = Course.objects.filter(id=id).first() 
 
 		Questions = Question.objects.filter(course=course_obj)
 
-		context = {'questions':Questions,'course':course_obj}
+		context = {'questions':Questions,'course':course_obj,'isHod':not isHod}
 
 		return render(request,'teacher/show_questions.html',context)
 
@@ -38,7 +42,7 @@ def show_questions(request,id):
 
 @login_required
 def show_responses(request,id,pk):
-	if len(Teacher.objects.filter(user=request.user))!=0:
+	if len(Teacher.objects.filter(user=request.user))!=0 or len(Hod.objects.filter(user=request.user))!=0:
 
 		course_obj = Course.objects.filter(id=id).first()
 
@@ -139,7 +143,7 @@ def download_pdf(request,id):
 
 	html_string = render_to_string('teacher/download.html', {'all_students_responses':all_students_responses})
 
-	html = HTML(string=html_string)
+	html = HTML(string=html_string,base_url=request.build_absolute_uri())
 	fs = FileSystemStorage('./')
 	print(fs.location)
 	html.write_pdf(target='./mypdf.pdf');

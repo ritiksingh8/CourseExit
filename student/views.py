@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from course.models import Course,Question,Response,CourseExitStatus
 from .models import Student
+from hod.models import Hod
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
@@ -25,6 +26,9 @@ def redirectingview(request):
 	if len(Student.objects.filter(user=request.user))!=0:
 		
 		return redirect('student-home')
+
+	if len(Hod.objects.filter(user=request.user))!=0:
+		return redirect('hod-home')
 
 	return redirect('teacher-home')
 

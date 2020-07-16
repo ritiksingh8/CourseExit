@@ -4,6 +4,7 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from student import views as student_views
 from teacher import views as teacher_views
+from hod import views as hod_views
 from teacher.views import QuestionCreateView,QuestionUpdateView,QuestionDeleteView
 from course import views as course_views
 urlpatterns = [
@@ -13,6 +14,7 @@ urlpatterns = [
 
     path('student/home',student_views.home,name='student-home'),
     path('teacher/home',teacher_views.home,name='teacher-home'),
+    path('hod/home',hod_views.home,name='hod-home'),
 
     path('redirectingurl',student_views.redirectingview,name='redirectingurl'),
 
@@ -23,6 +25,8 @@ urlpatterns = [
     path('teacher/course/<int:id>/questions/<int:pk>/responses',teacher_views.show_responses,name='show_responses'),
 
     path('student/course/<int:id>/questions',student_views.show_questions,name='show_questions_students'),
+
+    path('hod/courses/<str:year>/',hod_views.show_courses,name="show_courses"),
     
     path('changepassword',student_views.change_password,name="changepassword"),
     path('password-reset/',
