@@ -4,6 +4,7 @@ from student.models import Student
 from django.shortcuts import reverse
 # Create your models here.
 
+
 class Course(models.Model):
 	cname=models.CharField(max_length=100)
 	branch=models.CharField(max_length=4)

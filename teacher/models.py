@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from course.models import Course
 # Create your models here.
 
+
 class Teacher(models.Model):
 
 	user = models.OneToOneField(User,on_delete=models.CASCADE)
