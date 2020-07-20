@@ -52,6 +52,8 @@ urlpatterns = [
 
 
     path('pdf/',course_views.html_to_pdf_view,name='pdf'),
-    path('teacher/course/<int:id>/download',teacher_views.download_pdf,name='download-pdf')
+    path('teacher/course/<int:id>/download',teacher_views.download_pdf,name='download-pdf'),
+    path('teacher/course/<int:id>/analysis',teacher_views.analysis_pdf,name='analysis-pdf')
+
 ]
    

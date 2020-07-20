@@ -15,6 +15,7 @@
 					<h2 class="card-title">{{ faculty_course_mapping.course.cname }}</h2>
 					<a href="{% url 'show_questions' faculty_course_mapping.course.id %}" class="card-link btn btn-outline-primary btn-sm">Show Questions</a>
 					<a href="{% url 'download-pdf' faculty_course_mapping.course.id %}" class="card-link btn btn-outline-primary btn-sm">Download Pdf Of Responses</a>
+					<a href="{% url 'analysis-pdf' faculty_course_mapping.course.id %}" class="card-link btn btn-outline-primary btn-sm">Download Pdf of Analysis</a>
 				</div>
 				<div style="height: .5rem;width:100%;background-image: linear-gradient(to right,#0575E6,#021B79); border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; "></div>
 			</div>

@@ -155,6 +155,39 @@ def download_pdf(request,id):
 
 	return response
 
+def analysis_pdf(request,id):
+
+	course_obj = Course.objects.filter(id=id).first()
+	questions = Question.objects.filter(course=course_obj)
+
+	analysis = []
+
+	for question in questions:
+
+		average = len(Response.objects.filter(question=question,answer='Average'))
+
+		high = len(Response.objects.filter(question=question,answer='High'))
+
+		low = len(Response.objects.filter(question=question,answer='Low'))
+
+		total = average + high + low
+
+		analysis.append((average,high,low,question,total))
+
+	html_string = render_to_string('teacher/analysis.html', {'analysis':analysis,'course':course_obj})
+
+	html = HTML(string=html_string,base_url=request.build_absolute_uri())
+	fs = FileSystemStorage('./')
+	print(fs.location)
+	html.write_pdf(target='./mypdf.pdf');
+
+	with fs.open('mypdf.pdf') as pdf:
+		response = HttpResponse(pdf, content_type='application/pdf')
+		response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
+		return response
+
+	return response
+
 
 
 
