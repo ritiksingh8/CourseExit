@@ -9,7 +9,7 @@ from teacher.views import QuestionCreateView,QuestionUpdateView,QuestionDeleteVi
 from course import views as course_views
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('login/',auth_views.LoginView.as_view(template_name="student/login.html"),name='login'),
+    path('/',auth_views.LoginView.as_view(template_name="student/login.html"),name='login'),
     path('logout/',auth_views.LogoutView.as_view(template_name="student/logout.html"),name='logout'),
 
     path('student/home',student_views.home,name='student-home'),
