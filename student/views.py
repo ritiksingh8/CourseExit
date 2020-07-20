@@ -41,7 +41,7 @@ def show_questions(request,id):
 	course_exit_status_objects = CourseExitStatus.objects.filter(course=course_obj,student=student)
 
 	if len(course_exit_status_objects)!=0:
-		return render(request,'student/forbidden.html')
+		return render(request,'student/already_submitted.html')
 
 
 	questions = Question.objects.filter(course=course_obj)
