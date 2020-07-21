@@ -46,27 +46,39 @@ def show_questions(request,id):
 
 	questions = Question.objects.filter(course=course_obj)
 	index = [(i+1) for i in range(len(questions))]
-	questions_with_index = zip(index,questions)
+	questions_with_index = list(zip(index,questions))
+	flag = True
 
 	if request.method == 'POST':
 
 		for index,question in questions_with_index:
 			answer = str(request.POST.get(str(index),""))
-			response_obj = Response(question=question,student=student,answer=answer)
-			response_obj.save()
 
-		course_exit_status_obj = CourseExitStatus(course=course_obj,student=student,status="Filled")
-		course_exit_status_obj.save()
-		messages.success(request,f'Your Response has been recorded!')
-		return redirect('student-home')
+			if answer == '':
+				flag = False
 
+		if flag:
 
-	else:
-		context = {
+			for index,question in questions_with_index:
+				answer = str(request.POST.get(str(index),""))
+
+				response_obj = Response(question=question,student=student,answer=answer)
+				response_obj.save()
+
+			course_exit_status_obj = CourseExitStatus(course=course_obj,student=student,status="Filled")
+			course_exit_status_obj.save()
+			messages.success(request,f'Your Response has been recorded!')
+			return redirect('student-home')
+		else:
+			messages.warning(request,f'Please, Answer all the questions!')
+
+	# print(questions_with_index[0])
+
+	context = {
 			'questions':questions_with_index
 		}
 
-		return render(request,'student/show_questions.html',context=context)
+	return render(request,'student/show_questions.html',context=context)
 
 @login_required
 def change_password(request):
