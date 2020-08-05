@@ -172,13 +172,13 @@ def analysis_pdf(request,id):
 
 		total = average + high + low
 
-		high_percent = ((5 * high)/(5 * total)) * 100
+		high_percent = round(((5 * high)/(5 * total)) * 100,2)
 
-		average_percent = ((3 * average)/(5 * total)) * 100
+		average_percent = round(((3 * average)/(5 * total)) * 100,2)
 
-		low_percent = ((1 * low)/(5 * total)) * 100
+		low_percent = round(((1 * low)/(5 * total)) * 100,2)
 
-		total_percent = ((3 * average + 5 * high + 1 * low)/(5 * total)) * 100
+		total_percent = round(((3 * average + 5 * high + 1 * low)/(5 * total)) * 100,2)
 
 		analysis.append((average,high,low,question,total,average_percent,high_percent,low_percent,total_percent))
 
