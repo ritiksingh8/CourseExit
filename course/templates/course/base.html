@@ -44,6 +44,10 @@
 	    <ul class="navbar-nav">
 	    	
 	    	{% if user.is_authenticated %}
+	    		{% if user.teacher %}
+
+	    			<a class="nav-item nav-link ml-auto text-white" href="{% url 'teacher-history' %}">History</a>
+	    		{% endif %}
 	    		<a class="nav-item nav-link ml-auto text-white" href="{% url 'changepassword' %}">Change Password</a>
 	    		<a class="nav-item nav-link ml-auto text-white" href="{% url 'logout' %}">Logout</a>
 	    	{% else %}

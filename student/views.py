@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from cexit.settings import CURRENT_YEAR,SEM_TYPE
 # Create your views here.
 
 @login_required
@@ -14,7 +15,7 @@ def home(request):
 	if len(Student.objects.filter(user=request.user))!=0:
 		sem = request.user.student.sem
 		context ={
-			'course':Course.objects.filter(sem=sem)
+			'course':Course.objects.filter(sem=sem,batch=CURRENT_YEAR,sem_type = SEM_TYPE)
 		}
 
 		return render(request,'student/home.html',context=context)
@@ -98,4 +99,4 @@ def change_password(request):
 
 	form = PasswordChangeForm(user=request.user)
 	context = {'form':form}
-	return render(request,'student/change_password.html',context)
+	return render(request,'student/change_password.html',context) 

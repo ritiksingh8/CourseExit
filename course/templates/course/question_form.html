@@ -1,27 +1,40 @@
 {% extends 'course/base.html' %}
 {% load crispy_forms_tags %}
-{% block content %}		
-	
-	<div class="content-section mt-4">
+{% block content %}	
 
-		<form method="POST">
 
-			{% csrf_token %}
+	{% if polling_started %}
 
-			<fieldset class="form-group">
+		<div class="container">
+			<div class="jumbotron">
+			  <h1 class="display-5">Polling has already started! </h1>
+			  <hr class="my-4">
+			  <a class="btn btn-primary btn-lg" style="float:right" href="{% url 'redirectingurl' %}" role="button">Go Back</a>
+		  	</div>
+		</div>
 
-				<legend class="border-bottom mb-4">Question</legend>
-				{{ form|crispy }}
+	{% else %}
+		<div class="content-section mt-4">
 
-			</fieldset>
+				<form method="POST">
 
-			<div class="form-group">
-				<button class="btn btn-outline-info" type="submit">Submit</button>
-			</div>
-			
-		</form>
-		
+					{% csrf_token %}
+
+					<fieldset class="form-group">
+
+						<legend class="border-bottom mb-4">Question</legend>
+						{{ form|crispy }}
+
+					</fieldset>
+
+					<div class="form-group">
+						<button class="btn btn-outline-info" type="submit">Submit</button>
+					</div>
+					
+				</form>
 				
-	</div>		
+					
+		</div>
+	{% endif %}			
 
 {% endblock content %}	 

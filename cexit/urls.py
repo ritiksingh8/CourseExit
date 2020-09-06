@@ -14,6 +14,7 @@ urlpatterns = [
 
     path('student/home',student_views.home,name='student-home'),
     path('teacher/home',teacher_views.home,name='teacher-home'),
+    path('teacher/history',teacher_views.history,name='teacher-history'),
     path('hod/home',hod_views.home,name='hod-home'),
 
     path('redirectingurl',student_views.redirectingview,name='redirectingurl'),

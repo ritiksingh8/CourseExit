@@ -10,6 +10,8 @@ class Course(models.Model):
 	branch=models.CharField(max_length=4)
 	year=models.CharField(max_length=2)
 	sem=models.CharField(max_length=1)
+	batch=models.CharField(max_length=4,default='2020')
+	sem_type=models.CharField(max_length=4,default='odd')
 
 	def __str__ (self):
 
@@ -47,3 +49,4 @@ class CourseExitStatus(models.Model):
 	def __str__ (self):
 
 		return "{} - {}".format(self.student.user.first_name+" "+self.student.user.last_name,self.course.cname)
+ 

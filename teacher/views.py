@@ -11,12 +11,26 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 from weasyprint import HTML
 
+from cexit.settings import CURRENT_YEAR,SEM_TYPE
+
 @login_required
 def home(request):
 
 	if len(Teacher.objects.filter(user=request.user))!=0:
 		context ={
-			'faculty_course_mappings': FacultyCourseMapping.objects.filter(teacher = request.user.teacher)
+			'faculty_course_mappings': FacultyCourseMapping.objects.filter(teacher = request.user.teacher,course__batch=CURRENT_YEAR,course__sem_type=SEM_TYPE)
+		}
+
+		return render(request,'teacher/home.html',context=context)
+
+	return render(request,'student/forbidden.html')
+
+@login_required
+def history(request):
+
+	if len(Teacher.objects.filter(user=request.user))!=0:
+		context ={
+			'faculty_course_mappings': FacultyCourseMapping.objects.filter(teacher = request.user.teacher).exclude(course__batch=CURRENT_YEAR,course__sem_type=SEM_TYPE)
 		}
 
 		return render(request,'teacher/home.html',context=context)
@@ -84,6 +98,15 @@ class QuestionCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 class QuestionUpdateView(LoginRequiredMixin,UserPassesTestMixin, UpdateView):
 	model=Question	
 	fields=['question']
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		if len(Response.objects.filter(question=self.get_object()))!=0:
+			polling_started = True
+		else:
+			polling_started = False
+		context['polling_started'] = polling_started
+		return context
 
 	def form_valid(self,form):
 		course_obj = Course.objects.filter(id=self.kwargs['id']).first()
@@ -199,5 +222,6 @@ def analysis_pdf(request,id):
 
 
 
+ 
 
-
+ 
