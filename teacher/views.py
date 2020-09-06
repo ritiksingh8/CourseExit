@@ -18,7 +18,7 @@ def home(request):
 
 	if len(Teacher.objects.filter(user=request.user))!=0:
 		context ={
-			'faculty_course_mappings': FacultyCourseMapping.objects.filter(teacher = request.user.teacher,course.batch=CURRENT_YEAR,course.sem_type=SEM_TYPE)
+			'faculty_course_mappings': FacultyCourseMapping.objects.filter(teacher = request.user.teacher,course__batch=CURRENT_YEAR,course__sem_type=SEM_TYPE)
 		}
 
 		return render(request,'teacher/home.html',context=context)
@@ -30,7 +30,7 @@ def history(request):
 
 	if len(Teacher.objects.filter(user=request.user))!=0:
 		context ={
-			'faculty_course_mappings': FacultyCourseMapping.objects.filter(teacher = request.user.teacher).exclude(course.batch=CURRENT_YEAR,course.sem_type=SEM_TYPE)
+			'faculty_course_mappings': FacultyCourseMapping.objects.filter(teacher = request.user.teacher).exclude(course__batch=CURRENT_YEAR,course__sem_type=SEM_TYPE)
 		}
 
 		return render(request,'teacher/home.html',context=context)
