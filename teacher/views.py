@@ -79,6 +79,18 @@ class QuestionCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 	model=Question	
 	fields=['question']
 
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		course_obj = Course.objects.filter(id=self.kwargs['id']).first()
+		question_obj = Question.objects.filter(course = course_obj).first()
+
+		if len(Response.objects.filter(question = question_obj))!=0:
+			polling_started = True
+		else:
+			polling_started = False
+		context['polling_started'] = polling_started
+		return context
+
 	def form_valid(self,form):
 		course_obj = Course.objects.filter(id=self.kwargs['id']).first()
 		form.instance.course = course_obj
